@@ -1,0 +1,72 @@
+//FIRST FIT ALGORITHM
+
+
+#include <stdio.h>
+
+int main()
+
+{
+    int n1,n2,i,j;
+    
+printf("Enetr the no of processes:");
+   
+ scanf("%d",&n1);
+    
+printf("Enetr the no of blocks:");
+    
+scanf("%d",&n2);
+    
+    
+int process[n1],block[n2],allocated[n1];
+    
+printf("Enetr the size of processes:");
+    
+for(i=0;i<n1;i++)
+    
+{
+        scanf("%d",&process[i]);
+    }
+    
+printf("Enetr the size of blocks:");
+    
+for(i=0;i<n2;i++)
+    
+{
+        scanf("%d",&block[i]);
+    }
+    
+   
+ for(i=0;i<n1;i++)
+   
+ {
+        for(j=0;j<n2;j++)
+       
+ {
+            if(block[j]>=process[i])
+           
+ {
+                block[j]=block[j]-process[i];
+                
+	allocated[i]=j+1;
+                
+	break;
+           
+ }
+        
+}
+    
+}
+    
+    
+printf("Process No\tAllocated Block\n");
+   
+for(i=0;i<n1;i++)
+  
+ {
+       
+       printf("%d\t        %d\n",i+1,allocated[i]);
+   }
+
+    
+return 0;
+}
