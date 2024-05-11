@@ -1,0 +1,108 @@
+
+#include <stdio.h>
+
+struct blocks
+
+{
+    int size;
+    
+      int no;
+};
+ 
+
+
+int main() 
+{
+    int n1, n2, i, j;
+
+   
+ printf("Enter the number of processes: ");
+    
+scanf("%d", &n1);
+    
+printf("Enter the number of blocks: ");
+    
+scanf("%d", &n2);
+
+   
+ int process[n1], allocated[n1];
+    
+struct blocks block[n2];
+
+    
+printf("Enter the process sizes:\n");
+   
+ for (i = 0; i < n1; i++) 
+{
+        scanf("%d", &process[i]);
+    }
+
+    
+printf("Enter the no of each block and the block sizes:\n");
+    
+for (i = 0; i < n2; i++) 
+{
+        scanf("%d %d",&block[i].no, &block[i].size);
+    }
+
+   
+ // Arrange block sizes in descending order
+    
+int temp1,temp2;
+    
+for (j = 1; j < n2; j++) 
+{
+        for (i = 0; i < n2 - j; i++) 
+{
+            if (block[i].size < block[i + 1].size) 
+{
+                temp1 = block[i].size;
+               
+	 temp2= block[i].no;
+                
+                
+	block[i].size = block[i + 1].size;
+               
+	 block[i].no=block[i+1].no;
+                
+                
+	block[i + 1].size = temp1;
+                
+	block[i+1].no=temp2;
+            }
+        }
+    }
+    
+int allocation[n2];
+    
+for(i=0;i<n1;i++)
+    
+{
+        for(j=0;j<n2;j++)
+        
+{
+            if(process[i]<=block[j].size)
+            
+{
+                allocation[i]=block[j].no;
+                
+	block[j].size=block[j].size-process[i];
+                
+	break;
+            }
+        }
+    }
+    
+    
+printf("Process no\tBlock no\n");
+    
+for(i=0;i<n1;i++)
+    
+{
+        printf("%d\t        %d\n",i+1,allocation[i]);
+    }
+    
+   
+ return 0;
+}
+
