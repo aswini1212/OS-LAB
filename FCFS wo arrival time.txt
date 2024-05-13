@@ -1,0 +1,69 @@
+//FCFS w/o ARRIVAL TIME
+#include <stdio.h>
+struct processes
+{
+    int id;
+    int bt;
+    int ct;
+    int tat;
+    int wt;
+};
+
+int main()
+{
+    int n,i,j,sumtat=0,sumwt=0;
+    float avgtat=0,avgwt=0;
+    printf("Enter the no of processes:");
+    scanf("%d",&n);
+    struct processes process[n],temp; 
+    printf("Enetr the process id and the burst time:\n");
+    for(i=0;i<n;i++)
+    {
+        scanf("%d%d",&process[i].id,&process[i].bt);
+    }
+    //arranging the process in ascending order of id
+    for(j=1;j<n;j++)
+    {
+        for(i=0;i<n-j;i++)
+        {
+            if(process[i].id>process[i+1].id)
+            {
+                temp=process[i];
+                process[i]=process[i+1];
+                process[i+1]=temp;
+            }
+        }
+    }
+    
+    //finding the ct,tat and wt
+    process[0].ct=process[0].bt;
+    process[0].tat=process[0].ct;
+    process[0].wt=process[0].tat-process[0].bt;
+    for(i=1;i<n;i++)
+    {
+        process[i].ct=process[i-1].ct+process[i].bt;
+        process[i].tat=process[i].ct;
+        process[i].wt=process[i].tat-process[i].bt;
+        sumtat=sumtat+process[i].tat;
+        sumwt=sumwt+process[i].wt;
+    }
+    
+    
+    //finding average wt and tat
+    avgtat=(float)sumtat/n;
+    avgwt=(float)sumwt/n;
+    
+    //printing the details
+    printf("------FIRST COME FIRST SERVE------\n");
+    printf("\nPID\tBT\tCT\tTAT\tWT\n");
+    for(i=0;i<n;i++)
+    {
+        printf("%d\t%d\t%d\t%d\t%d\n",process[i].id,process[i].bt,process[i].ct,process[i].tat,process[i].wt);
+    }
+    printf("AVERAGE WAITING TIME:%f\n",avgwt);
+    printf("AVERAGE TAT:%f\n",avgtat);
+    
+
+    return 0;
+}
+
