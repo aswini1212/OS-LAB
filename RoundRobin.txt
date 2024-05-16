@@ -1,0 +1,115 @@
+#include <stdio.h>
+
+
+struct process {
+    int id;
+    int bt;
+    int ct;
+    int tat;
+    int wt;
+};
+
+
+int main() 
+{
+    
+	int n, i, tq, completed = 0, ct = 0;
+    
+	float avgtat = 0, avgwt = 0;
+    
+    
+	printf("Enter the number of processes: ");
+    
+	scanf("%d", &n);
+    
+    
+	struct process processes[n];
+    
+	printf("Enter the process ID and the burst time:\n");
+    
+	for(i = 0; i < n; i++) 
+	{
+        
+		scanf("%d %d", &processes[i].id, &processes[i].bt);
+    
+	}
+    
+	printf("Enter the time quantum: ");
+    
+	scanf("%d", &tq);
+    
+    
+	int remtime[n];
+    
+	for(i = 0; i < n; i++) 
+	{
+        
+		remtime[i] = processes[i].bt;
+    
+	}
+    
+    
+	while(completed < n) 
+	{
+        
+		for(i = 0; i < n; i++) 
+		{
+            
+			if(remtime[i] > 0) 
+			{
+                
+				if(remtime[i] <= tq) 
+				{
+                    
+					ct += remtime[i];
+                    
+					remtime[i] = 0;
+                    
+					completed++;
+                    
+					processes[i].ct = ct;
+                    
+					processes[i].tat = processes[i].ct;
+                    
+					processes[i].wt = processes[i].tat - processes[i].bt;
+                
+				}
+                
+			else 
+			{
+                    
+				remtime[i] -= tq;
+                    
+				ct += tq;
+                }
+            }
+        }
+    }
+    
+    
+	printf("------ROUND ROBIN SCHEDULING------\n");
+    
+	printf("\nPID\tBT\tCT\tTAT\tWT\n");
+    for(i = 0; i < n; i++) 
+	{
+        printf("%d\t%d\t%d\t%d\t%d\n", processes[i].id, processes[i].bt, processes[i].ct, processes[i].tat, processes[i].wt);
+        
+		avgtat += processes[i].tat;
+        
+		avgwt += processes[i].wt;
+    }
+    
+    
+	avgtat /= n;
+    
+	avgwt /= n;
+    
+    
+	printf("AVERAGE TAT: %.2f\n", avgtat);
+    
+	printf("AVERAGE WT: %.2f\n", avgwt);
+
+    
+	return 0;
+
+}
