@@ -1,0 +1,139 @@
+#include <stdio.h>
+
+void safeseq(int n, int m, int allocation[n][m], int max[n][m], int need[n][m], int available[m]);
+
+int main() {
+    int n, m, i, j; // n - no of processes, m - no of resources
+    printf("Enter the no of processes: ");
+    scanf("%d", &n);
+    printf("Enter the no of resources: ");
+    scanf("%d", &m);
+    
+    int instance[m];
+    for (i = 0; i < m; i++) {
+        printf("Enter the total no of instances of resource %d: ", i + 1);
+        scanf("%d", &instance[i]);
+    }
+    
+    int allocation[n][m], max[n][m], need[n][m], available[m];
+    
+    // Allocation matrix
+    printf("Enter the allocation matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            scanf("%d", &allocation[i][j]);
+        }
+    }
+    
+    // Max matrix
+    printf("Enter the max matrix representing the maximum resource instances needed by each process:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+    
+    // Finding the available matrix
+    for (i = 0; i < m; i++) {
+        int sum = 0;
+        for (j = 0; j < n; j++) {
+            sum += allocation[j][i];
+        }
+        available[i] = instance[i] - sum;
+    }
+    
+    // Finding the need matrix
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+    
+    printf("\n-----NEED MATRIX------\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            printf("%d ", need[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("\n-----AVAILABLE MATRIX------\n");
+    for (i = 0; i < m; i++) {
+        printf("%d ", available[i]);
+    }
+    
+    // Implementation of safety algorithm - Generation of safe sequence
+    safeseq(n, m, allocation, max, need, available);
+
+    // Resource Request algorithm
+    char ch;
+    int pno1, req[m], flag3 = 0;
+    printf("\nDoes any of the process want extra resource? (y/n): ");
+    scanf(" %c", &ch); 
+    if (ch == 'y') {
+        printf("Enter the process no: ");
+        scanf("%d", &pno1);
+        printf("Enter the instances needed:");
+        for (i = 0; i < m; i++) {
+            scanf("%d",&req[i]);
+            if (req[i] > available[i]) {
+                flag3 = 1;
+                printf("The available instance is less than the requested - cannot be allocated\n");
+                break;
+            }
+        }
+        if (flag3 == 0) {
+            // Finding new available, allocation, and need
+            for (i = 0; i < m; i++) {
+                available[i] -= req[i];
+                allocation[pno1][i] += req[i];
+                need[pno1][i] -= req[i];
+            }
+            // Call the safety algorithm again after resource allocation
+            safeseq(n, m, allocation, max, need, available);
+        }
+    }
+
+    return 0;
+}
+
+void safeseq(int n, int m, int allocation[n][m], int max[n][m], int need[n][m], int available[m]) {
+    // Implementation of safety algorithm
+    int work[m], safeseq[n];
+    for (int i = 0; i < m; i++) {
+        work[i] = available[i];
+    }
+    
+    int completed = 0, pno = 0, j = 0;
+    while (completed < n) {
+        int flag = 0;
+        for (int i = 0; i < n; i++) {
+            if (safeseq[i] == pno) {
+                flag = 1;
+                break;
+            }
+        }
+        if (!flag) {
+            int flag2 = 1;
+            for (int i = 0; i < m; i++) {
+                if (need[pno][i] > work[i]) {
+                    flag2 = 0;
+                    break;
+                }
+            }
+            if (flag2) {
+                safeseq[j++] = pno;
+                completed++;
+                for (int i = 0; i < m; i++) {
+                    work[i] += allocation[pno][i];
+                }
+            }
+        }
+        pno = (pno + 1) % n;
+    }
+    
+    printf("\n-----SAFE SEQUENCE------\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d ", safeseq[i]);
+    }
+}
