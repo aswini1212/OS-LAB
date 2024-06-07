@@ -1,0 +1,85 @@
+
+
+#include <stdio.h>
+
+int main()
+{
+   int n,i,j,requests[100],currentpos,direction=1,totalseektime=0,temp,initial,min,flag=0;
+   printf("Enetr the no of disk requests:");
+   scanf("%d",&n);
+   printf("Enetr the disk requests(circular track value):");
+   for(i=0;i<n;i++)
+   {
+       scanf("%d",&requests[i]);
+   }
+   printf("Enetr the initial position:");
+   scanf("%d",&initial);
+   //finding the minimum value of circular track
+   min=requests[0];
+   for(int h=1;h<n;h++)
+   {
+       if(requests[h]<min)
+       {
+           min=requests[h];
+           
+       }
+   }
+  
+   //we use twoloops, one for servicing the requests towards the higher end and another to start from zero and then to the starting position
+   //initial position is 0 and direction is towards the higher end
+    for(i=initial;i<=199;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            if(i==requests[j])
+            {
+                requests[j]=-1;
+                
+                break;
+            }
+            
+        }
+        
+    }
+    totalseektime=totalseektime+(199-initial);
+    //if all the requests are -1,then directly add 199 else do the next code
+    //checking if all the requests are -1
+    for(int u=0;u<n;u++)
+    {
+        if(requests[u]!=-1)
+        {
+            flag=1;
+            break;
+        }
+    }
+   
+    
+    //initial position from 199 to min
+    
+    if(flag==1)//there are further requests to be addressed
+    {
+        for(i=199;i>=min;i--)
+    {
+        for(j=0;j<n;j++)
+        {
+            if(requests[j]==i)
+            {
+                requests[j]=-1;
+                break;
+            }
+        }
+       
+    }
+    totalseektime=totalseektime+(199-min);
+    printf("Final seek time=%d",totalseektime);
+    printf("Inside flag 1");
+    }
+    
+    else //all requests are equalt to-1
+    {
+        totalseektime=totalseektime+ 199;
+        printf("Final seek time=%d",totalseektime);
+    }
+
+    return 0;
+}

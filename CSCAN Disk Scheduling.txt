@@ -1,0 +1,74 @@
+
+
+#include <stdio.h>
+
+int main()
+{
+   int n,i,j,k,requests[100],initial,totalseektime=0,max,flag=0;
+   printf("Enter the no of disk requests: ");
+   scanf("%d",&n);
+   printf("Enter the disk requests(circular tracks):");
+   for(i=0;i<n;i++)
+   {
+       scanf("%d",&requests[i]);;
+   }
+   printf("Enter the initial position:");
+   scanf("%d",&initial);
+   //here we use two loops ,one for traversing towards the right to 199 and another for traversing from 0 to a position
+    for(i=initial;i<=199;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            if(i==requests[j])
+            {
+                requests[j]=-1;
+                break;
+            }
+        }
+    }
+    totalseektime=totalseektime+(199-initial);
+    totalseektime=totalseektime+(199 - 0);
+    //we need to check if there are any requests to be serviced 
+    for(int u=0;u<n;u++)
+    {
+        if(requests[u]!=-1)
+        {
+            flag=1;
+            break;
+        }
+    }
+    //now we need to find the max value that is there in the request array
+    max=requests[0];
+    for(k=1;k<n;k++)
+    {
+        if(requests[k]>max)
+        {
+            max=requests[k];
+        }
+    }
+   
+    //needed if an only if all the requests are not serviced
+    if(flag==1)
+    {
+        for(i=0;i<=max;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            if(i==requests[j])
+            {
+                requests[j]=-1;
+                break;
+            }
+        }
+    }
+    totalseektime=totalseektime+(max-0);
+    printf("Final seek time=%d",totalseektime);
+    }
+    else if (flag==0)
+    {
+        printf("Final seek time=%d",totalseektime);
+    }
+    
+    
+    return 0;
+}

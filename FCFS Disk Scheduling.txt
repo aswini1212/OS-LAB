@@ -1,0 +1,27 @@
+
+//FCFS disk scheduling algorithm
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+    int n,requests[100],i,j,totalseektime=0,currentpos=0;
+    printf("Enter the no of disk requests:");
+    scanf("%d",&n);
+    printf("Enter the disk request value(circular track position):");
+    for(i=0;i<n;i++)
+    {
+        scanf("%d",&requests[i]);
+    }
+    //determining the head movement and calculating the total seek totalseektime
+    for(i=0;i<n;i++)
+    {
+        totalseektime=totalseektime+abs(requests[i]-currentpos);//abs is used here to get the absolute value, we included sidlib for that
+        currentpos=requests[i];
+        
+        
+    }
+    printf("Total Seektime:%d",totalseektime);
+    
+    return 0;
+}

@@ -1,0 +1,122 @@
+#include <stdio.h>
+
+int main()
+ {
+    int frames, pages, frame[100], page[100], pageexist, i, j, pagen;
+    int frequency[100] = {0}, timestamp[100] = {0}, pagefault = 0, min, oldest,k;
+    
+int currentTime = 0;
+
+   
+ printf("Enter the number of frames: ");
+    
+scanf("%d", &frames);
+
+   
+ // Initializing the frames
+    for (i = 0; i < frames; i++) 
+{
+        frame[i] = -1;
+        
+frequency[i] = 0;
+        
+timestamp[i] = 0;
+    }
+
+    
+printf("Enter the number of pages: ");
+   
+ scanf("%d", &pages);
+   
+ printf("Enter the page string: ");
+    
+for (i = 0; i < pages; i++)
+ {
+        scanf("%d", &page[i]);
+    }
+
+   
+ for (i = 0; i < pages; i++) 
+{
+        pageexist = 0;
+        
+pagen = page[i];
+        
+currentTime++;
+        
+       
+ // Check if page exists
+        
+for (j = 0; j < frames; j++) 
+{
+            if (pagen == frame[j]) 
+{
+                pageexist = 1;
+                
+	frequency[j]++;
+                
+	break;
+            }
+        }
+
+        
+// If page does not exist
+       
+ if (pageexist == 0) 
+{
+            min = 0;
+            
+	oldest = 0;
+
+           
+ // Find the least frequently used page
+            
+for (j = 1; j < frames; j++) 
+{
+                if (frame[j] == -1) 
+{ // Empty frame is found
+                    
+min = j;
+                    
+break;
+                } 
+else if (frequency[j] < frequency[min]) 
+{
+                    min = j;
+                } 
+else if (frequency[j] == frequency[min])
+ {
+                    // Use FIFO for tie-breaking and better allocation
+                    
+if (timestamp[j] < timestamp[min]) 
+{
+                        min = j;
+                    }
+                }
+            }
+
+            
+frame[min] = pagen;
+            
+frequency[min] = 1;
+            
+timestamp[min] = currentTime;
+            
+pagefault++;
+        }
+
+        
+printf("\nPage: %d\t", pagen);
+        
+for (k = 0; k < frames; k++) 
+{
+            printf("%d\t", frame[k]);
+        }
+    }
+
+    
+printf("\nPage faults: %d\n", pagefault);
+
+    
+return 0;
+}
