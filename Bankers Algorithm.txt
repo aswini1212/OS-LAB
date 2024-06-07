@@ -1,9 +1,8 @@
 #include <stdio.h>
 
-void safeseq(int n, int m, int allocation[n][m], int max[n][m], int need[n][m], int available[m]);
 
 int main() {
-    int n, m, i, j; // n - no of processes, m - no of resources
+    int n, m, i, j,k; // n - no of processes, m - no of resources
     printf("Enter the no of processes: ");
     scanf("%d", &n);
     printf("Enter the no of resources: ");
@@ -61,79 +60,137 @@ int main() {
     for (i = 0; i < m; i++) {
         printf("%d ", available[i]);
     }
-    
-    // Implementation of safety algorithm - Generation of safe sequence
-    safeseq(n, m, allocation, max, need, available);
+    printf("\n");
 
-    // Resource Request algorithm
-    char ch;
-    int pno1, req[m], flag3 = 0;
-    printf("\nDoes any of the process want extra resource? (y/n): ");
-    scanf(" %c", &ch); 
-    if (ch == 'y') {
-        printf("Enter the process no: ");
-        scanf("%d", &pno1);
-        printf("Enter the instances needed:");
-        for (i = 0; i < m; i++) {
-            scanf("%d",&req[i]);
-            if (req[i] > available[i]) {
-                flag3 = 1;
-                printf("The available instance is less than the requested - cannot be allocated\n");
+    //safety algorithm
+    int work[m],finish[n],completed=0,p,q,r,u=0,safeseq[n];
+    //initialising work std::vector<T> ;
+    for(i=0;i<m;i++)
+    {
+        work[i]=available[i];
+    }
+    //initialising finish vector
+    for(j=0;j<n;j++)
+    {
+        finish[j]=0;
+    }
+    while(completed<n)
+    {
+        for(p=0;p<n;p++)
+        {
+            if(finish[p]==0)
+            {
+                //work and need
+                for(j=0;j<m;j++)
+                {
+                    if(need[p][j]>work[j])
+                    {
+                        break;
+                    }
+                }
+                if(j==m)
+                {
+                    for(i=0;i<m;i++)
+                    {
+                        work[i]=work[i]+allocation[p][i];
+                        
+                    }
+                        finish[p]=1;
+                        completed++;
+                        safeseq[u]=p;
+                        u++;
+                }
+            }
+        }
+    }
+    printf("SAFESEQUENCE:");
+    for(i=0;i<n;i++)
+    {
+        printf("P%d\t",safeseq[i]);
+    }
+    
+    //resource request algorithm
+    int y,pid,request[m],canallo=1;
+    printf("Does any process want extra resource(1/0):");
+    scanf("%d",&y);
+    if(y==1)
+    {
+        printf("Enter the id of the process:");
+        scanf("%d",&pid);
+        printf("Enter the request of resources:");
+        for(q=0;q<m;q++)
+        {
+            scanf("%d",&request[q]);
+        }
+        //checking if the request can be allocated or not
+        for(k=0;k<m;k++)
+        {
+            if(request[k]>need[pid][k]||request[k]>available[k])
+            {
+                canallo=0;
                 break;
             }
         }
-        if (flag3 == 0) {
-            // Finding new available, allocation, and need
-            for (i = 0; i < m; i++) {
-                available[i] -= req[i];
-                allocation[pno1][i] += req[i];
-                need[pno1][i] -= req[i];
+        if(canallo==1)
+        {
+            for(i=0;i<m;i++)
+            {
+                allocation[pid][i]=allocation[pid][i]+request[i];
+                available[i]=available[i]-request[i];
+                need[pid][i]=need[pid][i]-request[i];
             }
-            // Call the safety algorithm again after resource allocation
-            safeseq(n, m, allocation, max, need, available);
+            //implementing safety algorithm
+            
+             int work[m],finish[n],completed=0,p,q,r,u=0,safeseq1[n];
+    //initialising work std::vector<T> ;
+    for(i=0;i<m;i++)
+    {
+        work[i]=available[i];
+    }
+    //initialising finish vector
+    for(j=0;j<n;j++)
+    {
+        finish[j]=0;
+    }
+    while(completed<n)
+    {
+        for(p=0;p<n;p++)
+        {
+            if(finish[p]==0)
+            {
+                //work and need
+                for(j=0;j<m;j++)
+                {
+                    if(need[p][j]>work[j])
+                    {
+                        break;
+                    }
+                }
+                if(j==m)
+                {
+                    for(i=0;i<m;i++)
+                    {
+                        work[i]=work[i]+allocation[p][i];
+                        
+                    }
+                        finish[p]=1;
+                        completed++;
+                        safeseq1[u]=p;
+                        u++;
+                }
+            }
         }
+    }
+    printf("SAFESEQUENCE:");
+    for(i=0;i<n;i++)
+    {
+        printf("P%d\t",safeseq1[i]);
+    }
+            
+        }
+        
     }
 
     return 0;
 }
 
-void safeseq(int n, int m, int allocation[n][m], int max[n][m], int need[n][m], int available[m]) {
-    // Implementation of safety algorithm
-    int work[m], safeseq[n];
-    for (int i = 0; i < m; i++) {
-        work[i] = available[i];
-    }
-    
-    int completed = 0, pno = 0, j = 0;
-    while (completed < n) {
-        int flag = 0;
-        for (int i = 0; i < n; i++) {
-            if (safeseq[i] == pno) {
-                flag = 1;
-                break;
-            }
-        }
-        if (!flag) {
-            int flag2 = 1;
-            for (int i = 0; i < m; i++) {
-                if (need[pno][i] > work[i]) {
-                    flag2 = 0;
-                    break;
-                }
-            }
-            if (flag2) {
-                safeseq[j++] = pno;
-                completed++;
-                for (int i = 0; i < m; i++) {
-                    work[i] += allocation[pno][i];
-                }
-            }
-        }
-        pno = (pno + 1) % n;
-    }
-    
-    printf("\n-----SAFE SEQUENCE------\n");
-    for (int i = 0; i < n; i++) {
-        printf("P%d ", safeseq[i]);
-    }
-}
