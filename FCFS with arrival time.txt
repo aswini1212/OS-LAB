@@ -43,17 +43,25 @@ int main()
     process[0].wt=process[0].tat-process[0].bt;
     for(i=1;i<n;i++)
     {
-        process[i].ct=process[i-1].ct+process[i].bt;
-        process[i].tat=process[i].ct-process[i].at;
-        process[i].wt=process[i].tat-process[i].bt;
-        sumtat=sumtat+process[i].tat;
-        sumwt=sumwt+process[i].wt;
+        if(process[i-1].ct<process[i].at)
+        {
+            process[i].ct=process[i].at+process[i].bt;
+            process[i].tat=process[i].ct-process[i].at;
+            process[i].wt=process[i].tat-process[i].bt;
+        }
+        else
+        {
+            process[i].ct=process[i].bt+process[i-1].ct;
+            process[i].tat=process[i].ct-process[i].at;
+            process[i].wt=process[i].tat-process[i].bt;
+            
+        }
     }
     
     
     //finding average wt and tat
-    avgtat=(float)sumtat/n;
-    avgwt=(float)sumwt/n;
+    //avgtat=(float)sumtat/n;
+    //avgwt=(float)sumwt/n;
     
     
     //arranging the process in ascending order of their id
@@ -77,10 +85,9 @@ int main()
     {
         printf("%d\t%d\t%d\t%d\t%d\n",process[i].id,process[i].bt,process[i].ct,process[i].tat,process[i].wt);
     }
-    printf("AVERAGE WAITING TIME:%f\n",avgwt);
-    printf("AVERAGE TAT:%f\n",avgtat);
+    //printf("AVERAGE WAITING TIME:%f\n",avgwt);
+    //printf("AVERAGE TAT:%f\n",avgtat);
     
 
     return 0;
 }
-
