@@ -1,0 +1,29 @@
+#include<stdio.h>
+
+#include<sys/ipc.h>
+
+#include<sys/shm.h>
+
+#include<string.h>
+
+#include<unistd.h>
+
+#include<stdlib.h>
+
+void main()
+{
+    
+void *sharedmemory;
+    
+int shmid;
+    
+shmid=shmget((key_t)1666,1024,0666);
+    
+sharedmemory=shmat(shmid,NULL,0);
+    
+printf("the process is attached at %p\n",sharedmemory);
+    
+fflush(stdout);
+    
+printf("The data read by the receiver is %s",(char*)sharedmemory);
+}
