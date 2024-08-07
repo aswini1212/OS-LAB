@@ -22,6 +22,10 @@ int main() {
     {
         printf("%s\t          %d\t         %d\n",str[i],start[i],end[i]);
     }
+    for(i=0;i<nf;i++)
+    {
+        printf("\nThe file %d is allocated from block %d to block %d\n",i+1,start[i],(start[i]+end[i]-1));
+    }
    
     
 
